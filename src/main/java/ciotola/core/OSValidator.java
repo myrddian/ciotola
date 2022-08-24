@@ -9,7 +9,7 @@
  *
  */
 
-package ciotola.implementation;
+package ciotola.core;
 
 class OSValidator {
 

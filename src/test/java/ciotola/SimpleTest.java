@@ -40,6 +40,7 @@ public class SimpleTest {
     }
   }
 
+
   @Test
   public void simpleTest() throws IOException {
     /*Ciotola ciotola = Ciotola.getInstance();
@@ -61,7 +62,7 @@ public class SimpleTest {
     System.out.println(ret.get());
     System.out.println(retValues.get());
 
-    Role<Void,Void> newRole = director.createRole(new Script<Void,Void> () {
+    /*Role<Void,Void> newRole = director.createRole(new Script<Void,Void> () {
       @Override
       public Void process(Void test) {
         System.out.println("test");
@@ -70,13 +71,33 @@ public class SimpleTest {
     });
 
 
-   /* Role<String, String> newRole = director.createRole(new Script<String, String>() {
+    Role<String, String> newRole = director.createRole(new Script<String, String>() {
       @Override
       public String process(String message) {
         System.out.println((String) message);
         return "hello there: " + message;
       }
     });
+
+    Role<Integer, String> testLock = director.createRole(new Script<Integer,String>() {
+      @Override
+      public String process(Integer message) {
+        System.out.println("Calling Method Two");
+        return testing.testTwo(message);
+      }
+    }, testing);
+
+    Role<String, String> testLockTwo = director.createRole(new Script<String,String>() {
+      @Override
+      public String process(String message) {
+        System.out.println("Calling Method One");
+        return testing.testMethod(message);
+      }
+    }, testing);
+
+    testLock.send(1);
+    testLockTwo.send("bob");
+    testLock.send(12);
 
     AgentPort<String> port = director.getBus().createPort("test",true);
     SourceAgent<String> helloSource = port.createSource(new SourceProducer<String>() {
@@ -89,12 +110,8 @@ public class SimpleTest {
           e.printStackTrace();
         }
       }
+    });
 
-      @Override
-      public boolean isReady() {
-        return true;
-      }
-    }, false);
     port.register(new SinkAgent<String>() {
       @Override
       public void onRecord(SourceRecord<String> record) {
@@ -121,12 +138,7 @@ public class SimpleTest {
           e.printStackTrace();
         }
       }
-
-      @Override
-      public boolean isReady() {
-        return true;
-      }
-    }, true);
+    });
 
     int counter = 0;
     while (true) {

@@ -23,4 +23,6 @@ public interface AgentPort<T> {
   String getName();
 
   SourceAgent<T> createSource(SourceProducer<T> producer, boolean forkJoin);
+  SourceAgent<T> createSource(NotifySourceProducer<T> producer, boolean forkJoin);
+  SourceAgent<T> createSource(SourceProducer<T> producer);
 }

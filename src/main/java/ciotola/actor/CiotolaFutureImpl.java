@@ -14,12 +14,13 @@ package ciotola.actor;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-final class CiotolaFutureImpl<R> implements CiotolaFuture<R> {
+final class CiotolaFutureImpl<R> implements CiotolaFuture<R>, Runnable {
 
   private boolean isError = false;
   private BlockingQueue<R> resultList = new LinkedBlockingQueue<>();
   private ActorException exception = null;
-
+  private ThenFunctionFuture thenPath = null;
+  private ErrorFunctionFuture errorPath = null;
   private R value = null;
 
   public void setResult(R result) {
@@ -46,8 +47,9 @@ final class CiotolaFutureImpl<R> implements CiotolaFuture<R> {
     return isError;
   }
 
-  public void setError(boolean isError) {
+  public void setError(boolean isError, ActorException exception) {
     this.isError = isError;
+    this.exception = exception;
   }
 
   @Override
@@ -60,7 +62,18 @@ final class CiotolaFutureImpl<R> implements CiotolaFuture<R> {
     return exception;
   }
 
-  public void setException(ActorException newException) {
-    exception = newException;
+  @Override
+  public CiotolaFuture<R> then(ThenFunctionFuture<R> value) {
+    return this;
+  }
+
+  @Override
+  public CiotolaFuture<R> error(ErrorFunctionFuture<R> value) {
+    return this;
+  }
+
+  @Override
+  public void run() {
+
   }
 }

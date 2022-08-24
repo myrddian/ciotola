@@ -107,6 +107,13 @@ public final class CiotolaDirector {
     return createRoleCommon(script,targetId,increment);
   }
 
+
+  public Role createRole(Script script, Object lock) {
+    long increment = getIncrement();
+    int targetId = lock.hashCode() % actorPool.size();
+    return createRoleCommon(script,targetId,increment);
+  }
+
   public Role createRole(Script script, int key) {
     int targetId = key % actorPool.size();
     long increment = getIncrement();

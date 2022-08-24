@@ -22,6 +22,7 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
   private Map<Long, Role> sourceRoles = new ConcurrentHashMap<>();
   private CiotolaDirector director;
   private boolean duplicate;
+  private long scheduleId = 0;
 
   public AgentPortImpl(String name, CiotolaDirector director, boolean sendAll) {
     this.portName = name;
@@ -45,7 +46,7 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
 
   @Override
   public void write(T message) {
-    this.write(0L, message);
+    this.write(getIncrement(), message);
   }
 
   @Override
@@ -65,11 +66,37 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
 
   @Override
   public SourceAgent<T> createSource(SourceProducer<T> producer, boolean forkJoin) {
+    return this.createSource(new NotifySourceProducerWrapper<>(producer),forkJoin);
+  }
+
+  @Override
+  public SourceAgent<T> createSource(NotifySourceProducer<T> producer, boolean forkJoin) {
     SourceProducerRunner runner = new SourceProducerRunner(producer, forkJoin);
     runner.register(this);
     Role sourceRole = director.createRole(runner);
     sourceRoles.put(sourceRole.getRoleId(),sourceRole);
     return runner;
+  }
+
+  @Override
+  public SourceAgent<T> createSource(SourceProducer<T> producer) {
+    return this.createSource(producer,true);
+  }
+
+  @Override
+  public Object process(SourceRecord<T> message){
+    scheduleType(message);
+    return null;
+  }
+
+  @Override
+  public boolean hasReturn() {
+    return false;
+  }
+
+  @Override
+  public boolean hasValues() {
+    return true;
   }
 
   private void scheduleType(SourceRecord<T> message) {
@@ -94,19 +121,8 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
     agentMap.get(msgTarget).getAgentRole().send(message);
   }
 
-  @Override
-  public Object process(SourceRecord<T> message){
-    scheduleType(message);
-    return null;
+  private synchronized long getIncrement() {
+    return ++scheduleId;
   }
 
-  @Override
-  public boolean hasReturn() {
-    return false;
-  }
-
-  @Override
-  public boolean hasValues() {
-    return true;
-  }
 }

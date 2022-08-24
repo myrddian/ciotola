@@ -89,5 +89,13 @@ public abstract class AbstractSourceAgent<T> implements SourceAgent<T>, Runnable
   public SourceAgent<T> createSource(SourceProducer<T> producer, boolean forkJoinTask) {
     throw new ActorException("Not supported");
   }
+  @Override
+  public SourceAgent<T> createSource(NotifySourceProducer<T> producer, boolean forkJoinTask) {
+    throw new ActorException("Not supported");
+  }
+  @Override
+  public SourceAgent<T> createSource(SourceProducer<T> producer) {
+    throw new ActorException("Not supported");
+  }
 
 }

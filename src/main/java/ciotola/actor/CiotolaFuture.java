@@ -12,12 +12,10 @@
 package ciotola.actor;
 
 public interface CiotolaFuture<T> {
-
   T get();
-
   boolean isError();
-
   boolean isComplete();
-
   ActorException getException();
+  CiotolaFuture<T> then(ThenFunctionFuture<T> value);
+  CiotolaFuture<T> error(ErrorFunctionFuture<T> value);
 }

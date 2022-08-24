@@ -12,8 +12,5 @@
 package ciotola.actor;
 
 public interface SourceProducer<T> {
-
   void execute(AgentPort<T> target);
-
-  boolean isReady();
 }

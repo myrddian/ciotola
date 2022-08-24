@@ -130,8 +130,7 @@ final class CiotolaActor extends Thread {
     } catch (Throwable ex) {
       logger.error(
           "Exception thrown by role: [" + role.getRoleId() + "] processed by Actor: " + runnerId, ex);
-      future.setError(true);
-      future.setException(new ActorException(ex));
+      future.setError(true,new ActorException(ex));
     }
   }
 

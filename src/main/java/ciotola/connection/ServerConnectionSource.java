@@ -24,11 +24,6 @@ public class ServerConnectionSource implements SourceProducer, SinkAgent {
   }
 
   @Override
-  public boolean isReady() {
-    return false;
-  }
-
-  @Override
   public void onRecord(SourceRecord record) {
 
   }

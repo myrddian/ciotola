@@ -15,15 +15,15 @@ import ciotola.Ciotola;
 
 public final class SourceProducerRunner<T> extends AbstractSourceAgent<T> implements Runnable {
 
-  private SourceProducer<T> producer;
+  private NotifySourceProducer<T> producer;
   private boolean processing = false;
 
-  public SourceProducerRunner(SourceProducer<T> producer, boolean forkJoin) {
+  public SourceProducerRunner(NotifySourceProducer<T> producer, boolean forkJoin) {
     this.producer = producer;
     this.setForkJoinTask(forkJoin);
   }
 
-  public SourceProducerRunner(SourceProducer<T> producer) {
+  public SourceProducerRunner(NotifySourceProducer<T> producer) {
     this.producer = producer;
     this.setForkJoinTask(true);
   }

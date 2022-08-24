@@ -12,7 +12,7 @@
 package ciotola;
 
 import ciotola.actor.CiotolaDirector;
-import ciotola.implementation.DefaultCiotolaContainer;
+import ciotola.core.DefaultCiotolaContainer;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;

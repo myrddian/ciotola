@@ -9,7 +9,7 @@
  *
  */
 
-package ciotola.implementation;
+package ciotola.core;
 
 import ciotola.Ciotola;
 import ciotola.CiotolaConnectionService;

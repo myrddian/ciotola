@@ -12,10 +12,8 @@
 package ciotola.connection;
 
 import ciotola.Ciotola;
-import ciotola.actor.AgentPort;
-import ciotola.actor.Bus;
-import ciotola.actor.CiotolaDirector;
-import ciotola.actor.SourceProducer;
+import ciotola.actor.*;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -28,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CiotolaServerSource implements SourceProducer {
+public class CiotolaServerSource implements NotifySourceProducer {
   private final Logger logger = LoggerFactory.getLogger(CiotolaServerSource.class);
   private int port;
   private ServerSocketChannel serverSocketChannel;
