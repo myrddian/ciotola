@@ -12,6 +12,7 @@
 package ciotola.actor;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,6 +25,7 @@ public final class CiotolaDirector {
   private long scheduleId = 0;
   private BusImpl agentBus = new BusImpl(this);
   private Map<Object,MethodRunner> concurrentObjects = new ConcurrentHashMap<>();
+  private Map<String,Long> actorMapper = new ConcurrentHashMap<>();
 
   public CiotolaDirector(int poolSize) {
     for (int counter = 0; counter < poolSize; ++counter) {
@@ -107,6 +109,11 @@ public final class CiotolaDirector {
     return createRoleCommon(script,targetId,increment);
   }
 
+  public Role createRole(Script script, String roleName) {
+    Role newRole = createRole(script);
+    mapRole(roleName,newRole);
+    return newRole;
+  }
 
   public Role createRole(Script script, Object lock) {
     long increment = getIncrement();
@@ -114,11 +121,23 @@ public final class CiotolaDirector {
     return createRoleCommon(script,targetId,increment);
   }
 
+  public Role createRole(Script script, String roleName, Object lock) {
+    Role newRole = createRole(script,lock);
+    mapRole(roleName,newRole);
+    return newRole;
+  }
+
   public Role createRole(Script script, int key) {
     int targetId = key % actorPool.size();
     long increment = getIncrement();
     return createRoleCommon(script,targetId,increment);
   }
+
+  public void mapRole(String name, Role role) {
+    actorMapper.put(name,role.getRoleId());
+  }
+
+  public Role getRole(String role) { return getRole(actorMapper.get(role));}
 
   public Role getRole(Long roleId) {
     return rolePool.get(roleId);
