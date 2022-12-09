@@ -12,15 +12,8 @@
 package ciotola;
 
 import ciotola.actor.ActorCall;
-import ciotola.actor.AgentPort;
 import ciotola.actor.CiotolaDirector;
 import ciotola.actor.CiotolaFuture;
-import ciotola.actor.Role;
-import ciotola.actor.Script;
-import ciotola.actor.SinkAgent;
-import ciotola.actor.SourceAgent;
-import ciotola.actor.SourceProducer;
-import ciotola.actor.SourceRecord;
 import ciotola.connection.TLVParserFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
