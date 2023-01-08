@@ -11,14 +11,6 @@
 
 package ciotola.actor;
 
-public interface Bus {
-
-  AgentPort getPort(String name);
-
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
-
-  void register(SinkActor agent, String portName);
+public interface SourceActor<T> {
+  void execute(AgentPort<T> target);
 }

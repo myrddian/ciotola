@@ -9,16 +9,11 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network.connection;
 
-public interface Bus {
+public interface ChannelHandler<R,W> {
 
-  AgentPort getPort(String name);
+  void channelRead(ChannelContext ctx, R input);
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
-
-  void register(SinkActor agent, String portName);
+  void channelWrite(ChannelContext<W> ctx);
 }

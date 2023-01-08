@@ -14,11 +14,11 @@ package ciotola.actor;
 
 final class SinkAgentRunner<T> implements RunnableScript<SourceRecord<T>, Object> {
 
-  private SinkAgent<T> sinkAgent;
+  private SinkActor<T> sinkActor;
   private Role agentRole;
 
-  public void addAgent(SinkAgent<T> newAgent) {
-    this.sinkAgent = newAgent;
+  public void addAgent(SinkActor<T> newAgent) {
+    this.sinkActor = newAgent;
   }
 
   public void setRole(Role agentRole) {
@@ -31,7 +31,7 @@ final class SinkAgentRunner<T> implements RunnableScript<SourceRecord<T>, Object
 
   @Override
   public Object process(SourceRecord<T> message){
-    sinkAgent.onRecord(message);
+    sinkActor.onRecord(message);
     return null;
   }
 

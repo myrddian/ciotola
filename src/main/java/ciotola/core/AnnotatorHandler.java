@@ -9,16 +9,9 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.core;
 
-public interface Bus {
+public interface AnnotatorHandler {
 
-  AgentPort getPort(String name);
-
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
-
-  void register(SinkActor agent, String portName);
+  void handle(Class typeFound);
 }

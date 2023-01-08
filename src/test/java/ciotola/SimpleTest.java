@@ -11,12 +11,10 @@
 
 package ciotola;
 
-import ciotola.actor.ActorCall;
-import ciotola.actor.CiotolaDirector;
-import ciotola.actor.CiotolaFuture;
-import ciotola.connection.TLVParserFactory;
+import ciotola.actor.*;
+import ciotola.network.parser.TLVParserFactory;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+
 import org.junit.jupiter.api.Test;
 
 public class SimpleTest {
@@ -45,7 +43,7 @@ public class SimpleTest {
 
     TLVParserFactory<TestTLVMesg> testFactory = new TLVParserFactory<>();
     testFactory.handle(TestTLVMesg.class);
-    CiotolaDirector director = Ciotola.getInstance().getDirector();
+    CiotolaDirector director = Ciotola.defaultDirector();
 
     MethodTester testing = new MethodTester();
     ActorCall<String> asyncCall = director.createCall(testing,"testMethod");
@@ -55,16 +53,20 @@ public class SimpleTest {
     System.out.println(ret.get());
     System.out.println(retValues.get());
 
-    /*Role<Void,Void> newRole = director.createRole(new Script<Void,Void> () {
+    director.createBackgroundActor(new BackgroundDelayActor() {
       @Override
-      public Void process(Void test) {
-        System.out.println("test");
-        return null;
+      public void process() {
+        System.out.println("Ready to make it to the top");
       }
-    });
 
+      @Override
+      public long getDelay() {
+        return 2000L;
+      }
+    }
+  );
 
-    Role<String, String> newRole = director.createRole(new Script<String, String>() {
+    Role<String, String> newRole2 = director.createRole(new Script<String, String>() {
       @Override
       public String process(String message) {
         System.out.println((String) message);
@@ -93,7 +95,7 @@ public class SimpleTest {
     testLock.send(12);
 
     AgentPort<String> port = director.getBus().createPort("test",true);
-    SourceAgent<String> helloSource = port.createSource(new SourceProducer<String>() {
+    port.createSource(new SourceActor<String>() {
       @Override
       public void execute(AgentPort<String> target) {
         try {
@@ -105,7 +107,7 @@ public class SimpleTest {
       }
     });
 
-    port.register(new SinkAgent<String>() {
+    port.register(new SinkActor<String>() {
       @Override
       public void onRecord(SourceRecord<String> record) {
         System.out.println(record.getValue()+" One");
@@ -113,7 +115,7 @@ public class SimpleTest {
       }
     });
 
-    port.register(new SinkAgent<String>() {
+    port.register(new SinkActor<String>() {
       @Override
       public void onRecord(SourceRecord<String> record) {
         System.out.println(record.getValue()+" Two");
@@ -121,7 +123,7 @@ public class SimpleTest {
       }
     });
 
-    SourceAgent<String> welcomeSource = port.createSource(new SourceProducer<String>() {
+   port.createSource(new SourceActor<String>() {
       @Override
       public void execute(AgentPort<String> target) {
         try {
@@ -135,7 +137,7 @@ public class SimpleTest {
 
     int counter = 0;
     while (true) {
-      CiotolaFuture<String> result = newRole.send("Test: "+ counter);
+      CiotolaFuture<String> result = newRole2.send("Test: "+ counter);
       ++counter;
         System.out.println(result.get());
       try {
@@ -143,7 +145,7 @@ public class SimpleTest {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-    }*/
+    }
 
   }
 }

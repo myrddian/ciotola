@@ -50,7 +50,7 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
   }
 
   @Override
-  public void register(SinkAgent<T> listener) {
+  public void register(SinkActor<T> listener) {
     SinkAgentRunner runner = new SinkAgentRunner();
     runner.addAgent(listener);
     Role agentRole = director.createRole(runner);
@@ -65,22 +65,21 @@ final class AgentPortImpl<T> implements AgentPort<T>, RunnableScript<SourceRecor
   }
 
   @Override
-  public SourceAgent<T> createSource(SourceProducer<T> producer, boolean forkJoin) {
-    return this.createSource(new NotifySourceProducerWrapper<>(producer),forkJoin);
+  public void createSource(SourceActor<T> producer, boolean forkJoin) {
+    this.createSource(new NotifySourceActorWrapper<>(producer),forkJoin);
   }
 
   @Override
-  public SourceAgent<T> createSource(NotifySourceProducer<T> producer, boolean forkJoin) {
-    SourceProducerRunner runner = new SourceProducerRunner(producer, forkJoin);
+  public void createSource(NotifySourceActor<T> producer, boolean forkJoin) {
+    SourceAgentRunner runner = new SourceAgentRunner(producer, forkJoin,director);
     runner.register(this);
     Role sourceRole = director.createRole(runner);
     sourceRoles.put(sourceRole.getRoleId(),sourceRole);
-    return runner;
   }
 
   @Override
-  public SourceAgent<T> createSource(SourceProducer<T> producer) {
-    return this.createSource(producer,true);
+  public void createSource(SourceActor<T> producer) {
+    this.createSource(producer,true);
   }
 
   @Override

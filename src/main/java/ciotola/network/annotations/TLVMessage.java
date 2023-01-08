@@ -9,16 +9,17 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network.annotations;
 
-public interface Bus {
+import ciotola.Ciotola;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  AgentPort getPort(String name);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface TLVMessage {
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
-
-  void register(SinkActor agent, String portName);
+  Ciotola.ByteOrder byteOrder() default Ciotola.ByteOrder.LITTLE_ENDIAN;
 }

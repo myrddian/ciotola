@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class CiotolaDirector {
 
@@ -26,6 +28,7 @@ public final class CiotolaDirector {
   private BusImpl agentBus = new BusImpl(this);
   private Map<Object,MethodRunner> concurrentObjects = new ConcurrentHashMap<>();
   private Map<String,Long> actorMapper = new ConcurrentHashMap<>();
+  private ExecutorService executorService = Executors.newCachedThreadPool();
 
   public CiotolaDirector(int poolSize) {
     for (int counter = 0; counter < poolSize; ++counter) {
@@ -40,9 +43,19 @@ public final class CiotolaDirector {
     return createRole(new ActorRunner(javaObject));
   }
 
+  public void submitJob(Runnable job) {
+    executorService.submit(job);
+  }
+
   public Role createRole(Object javaObject, int key) {
     return createRole(new ActorRunner(javaObject), key);
   }
+
+  public Role createBackgroundActor(BackgroundActor actor) {
+    return createRole(new BackgroundActorRunner(this,actor));
+  }
+  public Role createBackgroundActor(BackgroundDelayActor actor) { return createBackgroundActor(new BackgroundDelayActorHelper(actor));}
+  public Role createBackgroundActor(BackgroundReadyActor actor) { return createBackgroundActor(new BackgroundReadyActorHelper(actor));}
 
   public ActorCall createCall(Object host, String methodName) {
     int count = 0;

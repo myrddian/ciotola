@@ -1,10 +1,11 @@
 package ciotola.core;
 
-public interface ServiceCtx<T> {
-    boolean startUp();
-    boolean shutDown();
-    boolean run();
+import ciotola.actor.CiotolaFuture;
+
+public interface ServiceCtx<T,R> {
     String serviceName();
-    int getId();
+    String getId();
     T self();
+    CiotolaFuture<R> run (Object ...values);
 }
+

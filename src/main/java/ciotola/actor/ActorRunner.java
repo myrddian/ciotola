@@ -11,7 +11,7 @@
 
 package ciotola.actor;
 
-import ciotola.annotations.CiotolaScriptMethod;
+import ciotola.actor.annotation.CiotolaScriptMethod;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

@@ -9,16 +9,17 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network.connection;
 
-public interface Bus {
+import java.nio.ByteBuffer;
 
-  AgentPort getPort(String name);
+public interface ChannelProcess {
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
+  void process(ByteBuffer dataIn);
 
-  void register(SinkActor agent, String portName);
+  void setTriggerLevel(int level);
+
+  void setNextStep(ChannelProcess nextStep);
+
+  boolean canSetNotification();
 }

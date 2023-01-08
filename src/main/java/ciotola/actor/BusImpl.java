@@ -56,7 +56,7 @@ final class BusImpl implements Bus {
   }
 
   @Override
-  public void register(SinkAgent agent, String portName) {
+  public void register(SinkActor agent, String portName) {
     this.getPort(portName).register(agent);
   }
 

@@ -9,16 +9,15 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network.connection;
 
-public interface Bus {
+import ciotola.network.connection.BufferHandler;
 
-  AgentPort getPort(String name);
+public interface ChannelBuffer<TYPE> {
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
+  int getSize();
 
-  void register(SinkActor agent, String portName);
+  TYPE read();
+
+  void setNotifier(BufferHandler<TYPE> handler);
 }

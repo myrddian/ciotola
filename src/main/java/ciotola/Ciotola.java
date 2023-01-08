@@ -12,14 +12,13 @@
 package ciotola;
 
 import ciotola.actor.CiotolaDirector;
-import ciotola.core.DefaultCiotolaContainer;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
+import ciotola.core.ContainerCtx;
+
+import ciotola.core.DefaultContainerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Ciotola implements CiotolaContext {
+public class Ciotola {
 
   // Program Strings
   public static final String GENERIC_SERVICE_START_ERROR = "Unable to start service";
@@ -50,7 +49,7 @@ public class Ciotola implements CiotolaContext {
   public static final int INITIAL_POSITION = 0;
   private static Ciotola SINGLE_INSTANCE = null;
   private final Logger logger = LoggerFactory.getLogger(Ciotola.class);
-  private CiotolaContext serviceContainer = new DefaultCiotolaContainer();
+  private final DefaultContainerContext containerContext = new DefaultContainerContext();
 
   private Ciotola() {
   }
@@ -66,141 +65,20 @@ public class Ciotola implements CiotolaContext {
     return SINGLE_INSTANCE;
   }
 
-  public CiotolaContext getServiceContainer() {
-    return serviceContainer;
+  public ContainerCtx getDefaultContainerContext() {
+    return this.containerContext;
   }
 
-  public void setServiceContainer(CiotolaContext serviceContainer) {
-    this.serviceContainer = serviceContainer;
-  }
-
-  public void start() {
-    serviceContainer.startContainer();
-  }
-
-  @Override
-  public Collection<CiotolaServiceInterface> getServices() {
-    return serviceContainer.getServices();
-  }
-
-  @Override
-  public void addService(CiotolaServiceInterface newService) {
-    serviceContainer.addService(newService);
-  }
-
-  @Override
-  public void addService(Object newService) {
-    serviceContainer.addService(newService);
-  }
-
-  @Override
-  public void removeService(int serviceId) {
-    serviceContainer.removeService(serviceId);
-  }
-
-  @Override
-  public int injectService(CiotolaServiceInterface newService) {
-    return serviceContainer.injectService(newService);
-  }
-
-  @Override
-  public int injectService(CiotolaServiceInterface newService, boolean skipInjection) {
-    return serviceContainer.injectService(newService, skipInjection);
-  }
-
-  @Override
-  public int injectService(Object newService) {
-    return serviceContainer.injectService(newService);
-  }
-
-  @Override
-  public void injectDependencies(Object newService) {
-    serviceContainer.injectDependencies(newService);
-  }
-
-  @Override
-  public void addDependency(Object dependency) {
-    serviceContainer.addDependency(dependency);
-  }
-
-  @Override
-  public void addDependency(Class name, Object wire) {
-    serviceContainer.addDependency(name, wire);
-  }
-
-  @Override
-  public int injectService(Object newService, boolean skipInjection) {
-    return serviceContainer.injectService(newService, skipInjection);
-  }
-
-  @Override
-  public boolean startContainer() {
-    return serviceContainer.startContainer();
-  }
-
-  @Override
-  public List<String> getLoadedJars() {
-    return serviceContainer.getLoadedJars();
-  }
-
-  @Override
-  public void addAnnotation(Class annotation) {
-    serviceContainer.addAnnotation(annotation);
-  }
-
-  @Override
-  public List<String> getAnnotations() {
-    return serviceContainer.getAnnotations();
-  }
-
-  @Override
-  public void submitJob(Runnable job) {
-    serviceContainer.submitJob(job);
-  }
-
-  @Override
-  public ExecutorService getExecutorService() {
-    return serviceContainer.getExecutorService();
-  }
-
-  @Override
-  public void setExecutorService(ExecutorService executorService) {
-    serviceContainer.setExecutorService(executorService);
-  }
-
-  @Override
-  public int threadCapacity() {
-    return serviceContainer.threadCapacity();
-  }
-
-  @Override
-  public long getConnectionTimeOut() {
-    return serviceContainer.getConnectionTimeOut();
-  }
-
-  @Override
-  public void setConnectionTimeOut(long connectionTimeOut) {
-    serviceContainer.setConnectionTimeOut(connectionTimeOut);
-  }
-
-  @Override
-  public void execute(Runnable job, long key) {
-    serviceContainer.execute(job, key);
-  }
-
-  @Override
-  public void execute(CiotolaConnectionService connectionService) {
-    serviceContainer.execute(connectionService);
-  }
-
-  @Override
-  public void stop() {
-    serviceContainer.stop();
-  }
-
-  @Override
   public CiotolaDirector getDirector() {
-    return serviceContainer.getDirector();
+    return this.containerContext.getDirector();
+  }
+
+  public static ContainerCtx getDefault() {
+    return getInstance().getDefaultContainerContext();
+  }
+
+  public static CiotolaDirector defaultDirector() {
+    return getDefault().getDirector();
   }
 
   public enum ParseType {
@@ -215,4 +93,13 @@ public class Ciotola implements CiotolaContext {
     LITTLE_ENDIAN,
     BIG_ENDIAN
   }
+
+  public enum ServiceStatus {
+    SERVICE_START,
+    SERVICE_STOP,
+    SERVICE_RESTART,
+    SERVICE_RUNNING,
+    SERVICE_STATUS
+  }
+
 }

@@ -18,11 +18,11 @@ public interface AgentPort<T> {
 
   void write(T message);
 
-  void register(SinkAgent<T> listener);
+  void register(SinkActor<T> listener);
 
   String getName();
 
-  SourceAgent<T> createSource(SourceProducer<T> producer, boolean forkJoin);
-  SourceAgent<T> createSource(NotifySourceProducer<T> producer, boolean forkJoin);
-  SourceAgent<T> createSource(SourceProducer<T> producer);
+  void createSource(SourceActor<T> producer, boolean forkJoin);
+  void createSource(NotifySourceActor<T> producer, boolean forkJoin);
+  void createSource(SourceActor<T> producer);
 }

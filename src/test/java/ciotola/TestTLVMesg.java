@@ -11,8 +11,8 @@
 
 package ciotola;
 
-import ciotola.annotations.TLVHeaderField;
-import ciotola.annotations.TLVMessage;
+import ciotola.network.annotations.TLVHeaderField;
+import ciotola.network.annotations.TLVMessage;
 
 @TLVMessage(byteOrder = Ciotola.ByteOrder.LITTLE_ENDIAN)
 public class TestTLVMesg {

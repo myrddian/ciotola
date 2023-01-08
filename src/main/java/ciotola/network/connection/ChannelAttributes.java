@@ -9,16 +9,22 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network.connection;
 
-public interface Bus {
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
-  AgentPort getPort(String name);
+public interface ChannelAttributes {
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
+  SocketChannel getChannel();
 
-  void register(SinkActor agent, String portName);
+  SelectionKey getSelectionKey();
+
+  Long getTimeSinceLastUpdate();
+
+  Boolean noErrors();
+
+  void setError();
+
+  CiotolaConnectionHandler getCallback();
 }

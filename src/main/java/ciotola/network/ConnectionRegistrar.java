@@ -9,16 +9,14 @@
  *
  */
 
-package ciotola.actor;
+package ciotola.network;
 
-public interface Bus {
+import ciotola.network.connection.ChannelAttributes;
+import ciotola.network.connection.CiotolaConnectionHandler;
 
-  AgentPort getPort(String name);
+public interface ConnectionRegistrar {
 
-  AgentPort createPort(String name);
-  AgentPort createPort(String name, boolean broadcast);
-  void removePort(String name);
-  void write(String portName, SourceRecord record);
+  CiotolaConnectionHandler registerConnection(ChannelAttributes newConnection);
 
-  void register(SinkActor agent, String portName);
+  void connectionClosed(ChannelAttributes closedConnection);
 }
