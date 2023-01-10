@@ -39,10 +39,10 @@ public class SimpleTest {
     ciotola.addService(serverConnection);
     ciotola.startContainer();
 
-    while(true);*/
+    while(true);
 
     TLVParserFactory<TestTLVMesg> testFactory = new TLVParserFactory<>();
-    testFactory.handle(TestTLVMesg.class);
+    testFactory.handle(TestTLVMesg.class);*/
     CiotolaDirector director = Ciotola.defaultDirector();
 
     MethodTester testing = new MethodTester();
@@ -53,7 +53,7 @@ public class SimpleTest {
     System.out.println(ret.get());
     System.out.println(retValues.get());
 
-    director.createBackgroundActor(new BackgroundDelayActor() {
+    /* director.createBackgroundActor(new BackgroundDelayActor() {
       @Override
       public void process() {
         System.out.println("Ready to make it to the top");
@@ -146,6 +146,6 @@ public class SimpleTest {
         e.printStackTrace();
       }
     }
-
+    */
   }
 }
