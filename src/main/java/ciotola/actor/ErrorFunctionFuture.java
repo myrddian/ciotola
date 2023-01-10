@@ -1,5 +1,5 @@
 package ciotola.actor;
 
-public interface ErrorFunctionFuture<T> {
-    void call();
+public interface ErrorFunctionFuture {
+    void call(ActorException exception);
 }

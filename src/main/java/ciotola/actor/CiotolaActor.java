@@ -35,6 +35,7 @@ final class CiotolaActor extends Thread {
   private int runnerId = 0;
   private long threadWaitTime = 100L;
   private long noOpWait = threadWaitTime;
+  private CiotolaDirector director;
   public void setRunnerId(int runnerId) {
     this.runnerId = runnerId;
     this.setName("Actor [" + Integer.toString(runnerId) + "]");
@@ -60,6 +61,9 @@ final class CiotolaActor extends Thread {
     isRunning = false;
   }
 
+  public void setDirector (CiotolaDirector director) {
+    this.director = director;
+  }
 
   /*
    * Generates a list of tasks to execute
@@ -107,7 +111,7 @@ final class CiotolaActor extends Thread {
     } else {
       for (ScheduledRole scheduledRole:schedule) {
         if(scheduledRole.background) {
-          executeAction(scheduledRole.role.getScript(),scheduledRole.role);
+          executeAction(scheduledRole.role.getScript(),scheduledRole.role,scheduledRole.action.getFuture());
         } else {
           execute(scheduledRole.action,scheduledRole.role.getScript(),scheduledRole.action.getFuture(),scheduledRole.role);
         }
@@ -132,14 +136,21 @@ final class CiotolaActor extends Thread {
           "Exception thrown by role: [" + role.getRoleId() + "] processed by Actor: " + runnerId, ex);
       future.setError(true,new ActorException(ex));
     }
+    if (future.runnableCallBacks()) {
+      director.submitJob(future);
+    }
   }
 
-  private void executeAction(Script script, RoleImpl role) {
+  private void executeAction(Script script, RoleImpl role,CiotolaFutureImpl future) {
     try {
       script.process(null);
     } catch (Throwable ex) {
       logger.error(
           "Exception thrown by role: [" + role.getRoleId() + "] processed by Actor: " + runnerId, ex);
+      future.setError(true,new ActorException(ex));
+    }
+    if (future.runnableCallBacks()) {
+        director.submitJob(future);
     }
   }
 

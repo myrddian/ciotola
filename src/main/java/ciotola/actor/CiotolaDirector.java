@@ -34,6 +34,7 @@ public final class CiotolaDirector {
     for (int counter = 0; counter < poolSize; ++counter) {
       CiotolaActor actor = new CiotolaActor();
       actor.setRunnerId(counter);
+      actor.setDirector(this);
       actorPool.put(counter, actor);
       actor.start();
     }

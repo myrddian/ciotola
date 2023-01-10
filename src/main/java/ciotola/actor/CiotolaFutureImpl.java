@@ -19,7 +19,7 @@ final class CiotolaFutureImpl<R> implements CiotolaFuture<R>, Runnable {
   private boolean isError = false;
   private BlockingQueue<R> resultList = new LinkedBlockingQueue<>();
   private ActorException exception = null;
-  private ThenFunctionFuture thenPath = null;
+  private ThenFunctionFuture<R> thenPath = null;
   private ErrorFunctionFuture errorPath = null;
   private R value = null;
 
@@ -68,12 +68,29 @@ final class CiotolaFutureImpl<R> implements CiotolaFuture<R>, Runnable {
   }
 
   @Override
-  public CiotolaFuture<R> error(ErrorFunctionFuture<R> value) {
+  public CiotolaFuture<R> error(ErrorFunctionFuture value) {
     return this;
+  }
+
+  public boolean runnableCallBacks() {
+    return (thenPath!=null || errorPath!=null);
   }
 
   @Override
   public void run() {
-
+    if (exception!=null) {
+      if (errorPath!=null) {
+        errorPath.call(exception);
+      }
+    } else {
+      if(thenPath!=null) {
+        if(this.resultList.size()!=0) {
+          thenPath.call(this.get());
+        }
+        else {
+          thenPath.call(null);
+        }
+      }
+    }
   }
 }

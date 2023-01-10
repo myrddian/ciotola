@@ -17,5 +17,5 @@ public interface CiotolaFuture<T> {
   boolean isComplete();
   ActorException getException();
   CiotolaFuture<T> then(ThenFunctionFuture<T> value);
-  CiotolaFuture<T> error(ErrorFunctionFuture<T> value);
+  CiotolaFuture<T> error(ErrorFunctionFuture value);
 }
