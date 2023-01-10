@@ -77,6 +77,7 @@ final class CiotolaActor extends Thread {
           ScheduledRole scheduledRole = new ScheduledRole();
           scheduledRole.background = true;
           scheduledRole.role = role;
+          scheduledRole.action = role.takeAction();
           scheduledRoleList.add(scheduledRole);
         }
       }
@@ -111,7 +112,7 @@ final class CiotolaActor extends Thread {
     } else {
       for (ScheduledRole scheduledRole:schedule) {
         if(scheduledRole.background) {
-          executeAction(scheduledRole.role.getScript(),scheduledRole.role,scheduledRole.action.getFuture());
+          executeAction(scheduledRole.role.getScript(),scheduledRole.role,scheduledRole.action);
         } else {
           execute(scheduledRole.action,scheduledRole.role.getScript(),scheduledRole.action.getFuture(),scheduledRole.role);
         }
@@ -141,17 +142,24 @@ final class CiotolaActor extends Thread {
     }
   }
 
-  private void executeAction(Script script, RoleImpl role,CiotolaFutureImpl future) {
+  private void executeAction(Script script, RoleImpl role, ActorAction action) {
+    CiotolaFutureImpl future = null;
+    if (action!=null) {
+      future = action.getFuture();
+    }
     try {
       script.process(null);
     } catch (Throwable ex) {
       logger.error(
           "Exception thrown by role: [" + role.getRoleId() + "] processed by Actor: " + runnerId, ex);
-      future.setError(true,new ActorException(ex));
+      if(future!=null) {
+        future.setError(true,new ActorException(ex));
+      }
     }
-    if (future.runnableCallBacks()) {
+    if (future != null)
+      if (future.runnableCallBacks()) {
         director.submitJob(future);
-    }
+      }
   }
 
 

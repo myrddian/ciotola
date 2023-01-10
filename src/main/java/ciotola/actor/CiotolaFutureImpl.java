@@ -64,11 +64,13 @@ final class CiotolaFutureImpl<R> implements CiotolaFuture<R>, Runnable {
 
   @Override
   public CiotolaFuture<R> then(ThenFunctionFuture<R> value) {
+    this.thenPath = value;
     return this;
   }
 
   @Override
   public CiotolaFuture<R> error(ErrorFunctionFuture value) {
+    this.errorPath = value;
     return this;
   }
 

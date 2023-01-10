@@ -29,6 +29,9 @@ final class RoleImpl<T, R> implements Role<T, R> {
   }
 
   public ActorAction<T> takeAction() throws InterruptedException {
+    if (readMessageQueue.size() == 0) {
+      return null;
+    }
     return readMessageQueue.take();
   }
 

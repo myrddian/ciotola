@@ -138,8 +138,8 @@ public class SimpleTest {
     int counter = 0;
     while (true) {
       CiotolaFuture<String> result = newRole2.send("Test: "+ counter);
-      ++counter;
-        System.out.println(result.get());
+      result.then(value -> System.out.println(value+" HELLOOOOO"));
+      counter++;
       try {
         Thread.sleep(500);
       } catch (InterruptedException e) {
