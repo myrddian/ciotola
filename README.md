@@ -4,6 +4,23 @@ The framework is based on a simple invariant:
 Each Role is permanently owned by a single Actor thread.
 All work targeting a Role is executed only by its owning Actor, ensuring that Role state is mutated by a single thread. This allows concurrent systems to avoid explicit locking while preserving ordered execution.
 
+## Why Ciotola Exists
+
+Modern systems often blur responsibility between components,
+leading to implicit coupling and unsafe execution paths.
+
+Ciotola enforces a strict architectural invariant:
+
+- Actions are executed only by Actors
+- Roles define capability, not execution
+- Each Role belongs to exactly one Actor
+
+This prevents:
+- capability leakage
+- ambiguous ownership
+- invalid execution flows
+
+
 ## Roles, Scripts and Futures
 
 ### Execution Model
