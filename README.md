@@ -1,8 +1,48 @@
 # Ciotola
-A Simple parallelism and Actor framework, it's aim is to make it easier
-to write parallel code that is safe to execute.
+Ciotola is an experimental actor-style execution framework written in Java to explore deterministic concurrency without relying on shared executor task scheduling.
+The framework is based on a simple invariant:
+Each Role is permanently owned by a single Actor thread.
+All work targeting a Role is executed only by its owning Actor, ensuring that Role state is mutated by a single thread. This allows concurrent systems to avoid explicit locking while preserving ordered execution.
 
 ## Roles, Scripts and Futures
+
+### Execution Model
+The runtime consists of three primary components:
+#### Actors
+Actors are long-lived worker threads.
+Each Actor owns a collection of Roles and is responsible for executing all actions associated with those Roles.
+An Actor may manage many Roles, but a Role is never executed by more than one Actor.
+This establishes thread affinity and serialized execution.
+
+#### Roles
+A Role represents a stateful execution context.
+Messages sent to a Role are placed into a mailbox (blocking queue).
+The owning Actor consumes messages sequentially and executes the associated actions.
+Because only one Actor processes a Role’s mailbox:
+Role state does not require synchronization execution order is preserved
+concurrent access is avoided by design
+
+#### Director
+The CiotolaDirector manages Actor creation and Role placement.
+Roles are deterministically assigned to Actors using hash-based routing:
+```roleId % actorPoolSize ```
+This ensures stable ownership and predictable execution locality.
+
+#### Message Flow
+1. A caller sends a message to a Role.
+2. The message is wrapped as an executable action.
+3. The action is placed into the Role mailbox.
+4. The owning Actor dequeues and executes the action.
+5. Results are returned via futures or callbacks.
+
+#### Known Tradeoffs
+This design introduces several constraints:
+* Hotspot Roles can saturate a single Actor thread.
+* Role migration between Actors is not currently implemented.
+* Executor pools may provide better utilization for stateless workloads.
+Ciotola is intended as an exploration of execution models rather than a production-ready framework.
+
+## Examples
 
 A developer starts by writing a script, that is an object that implements
 the Script interface. This object is then used to create a Role, 
